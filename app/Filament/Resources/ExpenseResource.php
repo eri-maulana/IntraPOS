@@ -25,14 +25,18 @@ class ExpenseResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(50),
+                    ->maxLength(50)
+                    ->label('Nama'),
                 Forms\Components\Textarea::make('note')
                     ->required()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->label('Catatan'),
                 Forms\Components\DatePicker::make('date_expense')
-                    ->required(),
+                    ->required()
+                    ->label('Tanggal Pengeluaran'),
                 Forms\Components\TextInput::make('amount')
                     ->required()
+                    ->label('Jumlah Pengeluaran')
                     ->numeric(),
             ]);
     }
@@ -41,24 +45,30 @@ class ExpenseResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('date_expense')
                     ->date()
+                    ->label('Tanggal Pengeluaran')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->label('Nama'),
                 Tables\Columns\TextColumn::make('amount')
                     ->numeric()
+                    ->label('Jumlah Pengeluaran')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
+                    ->label('Tanggal dibuat')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
+                    ->label('Diubah pada')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
+                    ->label('Dihapus pada')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

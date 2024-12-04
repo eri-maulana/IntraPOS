@@ -25,12 +25,15 @@ class PaymentMethodResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->label('Nama')
                     ->maxLength(50),
                 Forms\Components\FileUpload::make('image')
                     ->image()
+                    ->label('Gambar')
                     ->required(),
                 Forms\Components\Toggle::make('is_cash')
-                    ->required(),
+                    ->required()
+                    ->label('Bayar tunai?'),
             ]);
     }
 
@@ -39,10 +42,13 @@ class PaymentMethodResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
+                    ->searchable()
+                    ->label('Nama'),
+                Tables\Columns\ImageColumn::make('image')
+                ->label('Gambar'),
                 Tables\Columns\IconColumn::make('is_cash')
-                    ->boolean(),
+                    ->boolean()
+                    ->label('Bayar tunai?'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

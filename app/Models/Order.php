@@ -10,13 +10,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Order extends Model
 {
     use HasFactory;
-    public function payment_method(): BelongsTo
+    public function paymentMethod(): BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class);
     }
 
     public function orderProducts(): HasMany
     {
-        return $this->hasMany(OrderProduct::class);
+        return $this->hasMany(OrderProduct::class, 'order_id');
     }
 }

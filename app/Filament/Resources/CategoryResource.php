@@ -60,8 +60,8 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->label('Nama Kategori'),
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('slug')
+                //     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()
                     ->label('Status Aktif'),

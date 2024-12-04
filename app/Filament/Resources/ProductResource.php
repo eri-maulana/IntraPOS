@@ -70,6 +70,8 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image')
+                ->label('Gambar'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->label('Nama'),
@@ -89,8 +91,7 @@ class ProductResource extends Resource
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()
                     ->label('Status Aktif'),
-                Tables\Columns\ImageColumn::make('image')
-                ->label('Gambar'),
+                
                 Tables\Columns\TextColumn::make('barcode')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
