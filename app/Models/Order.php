@@ -10,6 +10,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Order extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'gender',
+        'phone',
+        'birthday',
+        'total_price',
+        'note',
+        'payment_method_id',
+        'paid_amount',
+        'change_amount',
+    ];
     public function paymentMethod(): BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class);

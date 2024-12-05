@@ -2,81 +2,138 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
+use App\Filament\Resources\OrderResource\Pages;
+use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
 use App\Models\Product;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
+use App\Models\OrderProduct;
+use App\Models\PaymentMethod;
+use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
-use Filament\Forms\Components\DatePicker;
-use Livewire\Component;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\OrderResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\OrderResource\RelationManagers;
+use Filament\Forms\Components\Repeater;
+use Filament\Notifications\Notification;
 
-class OrderResource extends Resource 
+class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-shopping-cart';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Group::make()
+                Forms\Components\Group::make()
                     ->schema([
-                        Section::make('Info Utama')
+                        Forms\Components\Section::make('Info Utama')
                             ->schema([
-                                TextInput::make('name')
+                                Forms\Components\TextInput::make('name')
                                     ->required()
-                                    ->maxLength(50),
-                                TextInput::make('gender')
-                                    ->required(),
-                            ]),
-                    ]),
-                Group::make()
-                    ->schema([
-                        Section::make('Info Tambahan')
-                            ->schema([
-                                TextInput::make('email')
-                                    ->email()
-                                    ->maxLength(150),
-                                TextInput::make('phone')
-                                    ->tel()
+                                    ->label('Nama')
                                     ->maxLength(255),
-                                DatePicker::make('birthday'),
-                            ]),
-                    ]),
-
-                Section::make('Produk Dipesan')
+                                Forms\Components\Select::make('gender')
+                                    ->options([
+                                        'male' => 'Laki-laki',
+                                        'female' => 'Perempuan'
+                                    ])
+                                    ->label('Jenis Kelamin')
+                                    ->required(),
+                            ])
+                ]),
+                Forms\Components\Group::make()
                     ->schema([
-                        self::getItemsRepeater(),
+                        Forms\Components\Section::make('Info Tambahan')
+                            ->schema([
+                                Forms\Components\TextInput::make('email')
+                                    ->email()
+                                    ->maxLength(255),
+                                
+                                Forms\Components\TextInput::make('phone')
+                                    ->tel()
+                                    ->label('No. Telp')
+                                    ->maxLength(255),
+                                Forms\Components\DatePicker::make('birthday')
+                                ->label('Tanggal Lahir'),
+                            ])
+                ]),
+                Forms\Components\Section::make('Produk dipesan')->schema([
+                    self::getItemsRepeater(),
+                ]),
+                
+                Forms\Components\Group::make()
+                    ->schema([
+                        Forms\Components\Section::make()
+                            ->schema([
+                                Forms\Components\TextInput::make('total_price')
+                                    ->required()
+                                    ->label('Harga Total')
+                                    ->readOnly()
+                                    ->numeric(),
+                                Forms\Components\Textarea::make('note')
+                                    ->columnSpanFull()
+                                    ->label('Catatan'),
+                            ])
                     ]),
+                Forms\Components\Group::make()
+                    ->schema([
+                        Forms\Components\Section::make('Pembayaran')
+                            ->schema([
+                                Forms\Components\Select::make('payment_method_id')
+                                    ->relationship('paymentMethod', 'name')
+                                    ->label('Metode Pembayaran')
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                                        $paymentMethod = PaymentMethod::find($state);
+                                        $set('is_cash', $paymentMethod?->is_cash ?? false);
 
-                TextInput::make('total_price')
-                    ->required()
-                    ->numeric(),
-                Textarea::make('note')
-                    ->columnSpanFull(),
-                Select::make('payment_method_id')
-                    ->relationship('paymentMethod', 'name'),
-                TextInput::make('paid_amount')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('change_amount')
-                    ->numeric(),
+                                        if (!$paymentMethod?->is_cash) {
+                                            $set('change_amount', 0);
+                                            $set('paid_amount', $get('total_price'));
+                                        }
+
+                                        
+
+                                    })
+                                    ->afterStateHydrated(function (Forms\Set $set, Forms\Get $get, $state) {
+                                        $paymentMethod = PaymentMethod::find($state);
+
+                                        if (!$paymentMethod?->is_cash) {
+                                            $set('paid_amount', $get('total_price'));
+                                            $set('change_amount', 0);
+                                        }
+
+                                        $set('is_cash', $paymentMethod?->is_cash ?? false);
+                                    }),
+                                Forms\Components\Hidden::make('is_cash')
+                                    ->dehydrated(),
+                                Forms\Components\TextInput::make('paid_amount')
+                                    ->numeric()
+                                    ->reactive()
+                                    ->label('Nominal Bayar')
+                                    ->readOnly(fn (Forms\Get $get) => $get('is_cash') == false)
+                                    ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get, $state) {
+                                        // function untuk menghitung uang kembalian
+
+                                        self::updateExcangePaid($get, $set);
+                                    }),
+                                Forms\Components\TextInput::make('change_amount')
+                                    ->numeric()
+                                    ->label('Kembalian')
+                                    ->readOnly(),
+                            ])
+                        ]),
+                        
+               
+                
+                
+                
             ]);
     }
 
@@ -85,26 +142,24 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                ->label('Nama')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('gender'),
-                Tables\Columns\TextColumn::make('phone')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('birthday')
-                    ->date()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('gender')
+                ->label('Jenis Kelamin'),
                 Tables\Columns\TextColumn::make('total_price')
+                ->label('Harga Total')
                     ->numeric()
-                    ->readOnly()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('paymentMethod.name')
+                ->label('Metode Pembayaran')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('paid_amount')
+                ->label('Nominal Bayar')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('change_amount')
+                ->label('Kembalian')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -112,10 +167,6 @@ class OrderResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -149,7 +200,6 @@ class OrderResource extends Resource
         ];
     }
 
-
     public static function getItemsRepeater(): Repeater
     {
         return Repeater::make('orderProducts')
@@ -158,47 +208,53 @@ class OrderResource extends Resource
             ->columns([
                 'md' => 10,
             ])
-            ->afterStateUpdated(function (Get $get, Set $set) {
+            ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
                 self::updateTotalPrice($get, $set);
             })
             ->schema([
-                Select::make('product_id')
+                Forms\Components\Select::make('product_id')
                     ->label('Produk')
                     ->required()
                     ->options(Product::query()->where('stock', '>', 1)->pluck('name', 'id'))
                     ->columnSpan([
                         'md' => 5
                     ])
-                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                    ->afterStateHydrated(function (Forms\Set $set, Forms\Get $get, $state) {
                         $product = Product::find($state);
                         $set('unit_price', $product->price ?? 0);
                         $set('stock', $product->stock ?? 0);
-
+                    })
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        $product = Product::find($state);
+                        $set('unit_price', $product->price ?? 0);
+                        $set('stock', $product->stock ?? 0);
+                        $quantity = $get('quantity') ?? 1;
+                        $stock = $get('stock');
                         self::updateTotalPrice($get, $set);
                     })
                     ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
-                TextInput::make('quantity')
+                Forms\Components\TextInput::make('quantity')
+                    ->required()
                     ->label('Qty')
                     ->numeric()
-                    ->required()
                     ->default(1)
                     ->minValue(1)
                     ->columnSpan([
                         'md' => 1
                     ])
-                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
                         $stock = $get('stock');
                         if ($state > $stock) {
                             $set('quantity', $stock);
                             Notification::make()
-                                ->title('Stok tidak Cukup <br> Jumlah Barang yang ingin di beli melebihi stok yang tersedia!  ')
+                                ->title('Stok tidak Cukup !! <br> jumlah barang yang ingin di beli melebihi stok tersedia')
                                 ->warning()
                                 ->send();
                         }
 
                         self::updateTotalPrice($get, $set);
                     }),
-                TextInput::make('stock')
+                Forms\Components\TextInput::make('stock')
                     ->required()
                     ->label('Stok')
                     ->numeric()
@@ -206,25 +262,35 @@ class OrderResource extends Resource
                     ->columnSpan([
                         'md' => 1
                     ]),
-                TextInput::make('unit_price')
-                    ->required()
+                Forms\Components\TextInput::make('unit_price')
                     ->label('Harga Satuan (saat ini)')
+                    ->required()
                     ->numeric()
                     ->readOnly()
                     ->columnSpan([
                         'md' => 3
                     ]),
+                
             ]);
     }
 
-    protected static function updateTotalPrice(Get $get, Set $set): void
+    protected static function updateTotalPrice(Forms\Get $get, Forms\Set $set): void
     {
         $selectedProducts = collect($get('orderProducts'))->filter(fn($item) => !empty($item['product_id']) && !empty($item['quantity']));
 
-        $price = Product::find($selectedProducts->pluck('product_id'))->pluck('price', 'id');
-        $total = $selectedProducts->reduce(function ($total, $product) use ($price) {
-            return $total + ($price[$product['product_id']] * $product['quantity']);
+        $prices = Product::find($selectedProducts->pluck('product_id'))->pluck('price', 'id');
+        $total = $selectedProducts->reduce(function ($total, $product) use ($prices) {
+            return $total + ($prices[$product['product_id']] * $product['quantity']);
         }, 0);
+
         $set('total_price', $total);
+    }
+
+    protected static function updateExcangePaid(Forms\Get $get, Forms\Set $set): void
+    {
+        $paidAmount = (int) $get('paid_amount') ?? 0;
+        $totalPrice = (int) $get('total_price') ?? 0;
+        $exchangePaid = $paidAmount - $totalPrice;
+        $set('change_amount', $exchangePaid);
     }
 }
