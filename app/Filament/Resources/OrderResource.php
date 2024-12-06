@@ -24,7 +24,8 @@ class OrderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-shopping-cart';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Data Transaksi';
+
 
     public static function form(Form $form): Form
     {
@@ -215,7 +216,7 @@ class OrderResource extends Resource
                 Forms\Components\Select::make('product_id')
                     ->label('Produk')
                     ->required()
-                    ->options(Product::query()->where('stock', '>', 1)->pluck('name', 'id'))
+                    ->options(Product::query()->where('stock', '>=', 1)->pluck('name', 'id'))
                     ->columnSpan([
                         'md' => 5
                     ])
