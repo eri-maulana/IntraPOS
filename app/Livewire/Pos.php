@@ -59,6 +59,9 @@ class Pos extends Component implements HasForms
     }
     public function mount()
     {
+        if (session()->has('orderItems')) {
+            $this->order_items = session('orderItems');
+        }
         $this->payment_methods = PaymentMethod::all();
         $this->form->fill(['payment_methods', $this->payment_methods]);
     }
@@ -84,7 +87,7 @@ class Pos extends Component implements HasForms
                 }
             }
 
-            if($existingItemKey !== null){
+            if ($existingItemKey !== null) {
                 $this->order_items[$existingItemKey]['quantity']++;
             } else {
                 $this->order_items[] = [
@@ -98,9 +101,9 @@ class Pos extends Component implements HasForms
 
             session()->put('orderItems', $this->order_items);
             Notification::make()
-                    ->title('Produk ditambahkan ke keranjang')
-                    ->success()
-                    ->send();
+                ->title('Produk ditambahkan ke keranjang')
+                ->success()
+                ->send();
         }
     }
 
@@ -108,5 +111,49 @@ class Pos extends Component implements HasForms
     {
         $this->order_items = $orderItems;
         session()->put('orderItems', $orderItems);
+    }
+
+    public function increaseQuantity($product_id)
+    {
+        $product = Product::find($product_id);
+
+        if (!$product) {
+            Notification::make()
+                ->title('Produk tidak ditemukan')
+                ->danger()
+                ->send();
+            return;
+        }
+
+        foreach ($this->order_items as $key => $item) {
+            if ($item['product_id'] == $product_id) {
+                if ($item['quantity'] + 1 <= $product->stock) {
+                    $this->order_items[$key]['quantity']++;
+                } else {
+                    Notification::make()
+                        ->title('Stok barang tidak mencukupi')
+                        ->danger()
+                        ->send();
+                }
+                break;
+            }
+        }
+        session()->put('orderItems', $this->order_items);
+    }
+
+    public function decreaseQuantity($product_id)
+    {
+        foreach ($this->order_items as $key => $item) {
+            if ($item['product_id'] == $product_id) {
+                if ($this->order_items[$key]['quantity'] > 1) {
+                    $this->order_items[$key]['quantity']--;
+                } else {
+                    unset($this->order_items[$key]);
+                    $this->order_items = array_values($this->order_items);
+                }
+                break;
+            }
+        }
+        session()->put('orderItems', $this->order_items);
     }
 }

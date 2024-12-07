@@ -39,9 +39,9 @@
                         </div>
                     </div>
                     <div class="flex items-center">
-                        <x-filament::button color="warning">-</x-filament::button>
+                        <x-filament::button color="warning" wire:click="decreaseQuantity({{ $item['product_id'] }})">-</x-filament::button>
                         <span class="px-4">{{ $item['quantity'] }}</span>
-                        <x-filament::button color="success">+</x-filament::button>
+                        <x-filament::button color="success" wire:click="increaseQuantity({{ $item['product_id'] }})">+</x-filament::button>
                     </div>
                 </div>
             </div>
