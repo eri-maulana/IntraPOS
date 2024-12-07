@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\ProductResource\Pages;
 
-use App\Filament\Resources\ProductResource;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\ProductResource;
 
 class ListProducts extends ListRecords
 {
@@ -13,6 +14,9 @@ class ListProducts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Action::make("Download Template")
+                ->url(route('download-template'))
+                ->color('success'),
             Actions\CreateAction::make(),
         ];
     }
