@@ -49,7 +49,10 @@ class Pos extends Component implements HasForms
                                 'male' => 'Laki - laki',
                                 'female' => 'Perempuan'
                             ]),
-                        TextInput::make('total_price'),
+                        TextInput::make('total_price')
+                            ->numeric()
+                            ->readOnly()
+                            ->default(fn() => $this->total_price),
                         Select::make('payment_method_id')
                             ->required()
                             ->label('Metode Pemabayaran')
@@ -155,5 +158,15 @@ class Pos extends Component implements HasForms
             }
         }
         session()->put('orderItems', $this->order_items);
+    }
+
+    public function calculateTotal()
+    {
+        $total = 0;
+        foreach ($this->order_items as $item) {
+            $total += $item['quantity'] * $item['price'];
+        }
+        $this->total_price = $total;
+        return $total;
     }
 }

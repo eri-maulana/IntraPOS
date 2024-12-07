@@ -12,7 +12,7 @@
                         <img src="{{ $item->image_url }}" alt="Product Image"
                             class="w-full h-16 object-cover rounded-lg mb-2">
                         <h3 class="text-sm font-semibold">{{ $item->name }}</h3>
-                        <p class="text-gray-600 dark:text-gray-400 text-xs">Rp. {{ $item->price }}</p>
+                        <p class="text-gray-600 dark:text-gray-400 text-xs">Rp. {{ number_format($item->price, 0, ',', '.') }}</p>
                         <p class="text-gray-600 dark:text-gray-400 text-xs">Stok: {{ $item->stock }}</p>
                     </div>
                 @endforeach
@@ -23,10 +23,11 @@
         </div>
     </div>
     <div class="md:col-span-1 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
-
+        @if(count($order_items) > 0)
         <div class="py-4">
-            <h3 class="text-lg font-semibold text-center">Total: Rp 25.0000</h3>
+            <h3 class="text-lg font-semibold text-center">Total: Rp {{ number_format($this->calculateTotal(), 0, ',', '.') }}</h3>
         </div>
+        @endif
         @foreach ($order_items as $item)
             <div class="mb-4">
                 <div class="flex justify-between items-center bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
@@ -35,7 +36,7 @@
                             alt="Product Image" class="w-10 h-10 object-cover rounded-lg mr-2">
                         <div class="px-2">
                             <h3 class="text-sm font-semibold">{{ $item['name'] }}</h3>
-                            <p class="text-gray-600 dark:text-gray-400 text-xs">Rp {{ $item['price'] }}</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-xs">Rp {{ number_format($item['price'], 0, ',', '.') }}</p>
                         </div>
                     </div>
                     <div class="flex items-center">
