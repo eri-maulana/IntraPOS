@@ -58,6 +58,7 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 'Data Transaksi',
                 'Data Produk',
+                'Pengaturan',
                 'Lainnya',
             ]);
     }
