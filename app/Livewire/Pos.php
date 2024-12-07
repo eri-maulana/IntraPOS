@@ -2,13 +2,16 @@
 
 namespace App\Livewire;
 
-use Filament\Forms;
+use App\Models\Order;
 use App\Models\Product;
-use Filament\Forms\Set;
-use Livewire\Component;
-use Filament\Forms\Form;
+use App\Models\OrderProduct;
 use App\Models\PaymentMethod;
 
+use Filament\Forms;
+use Filament\Forms\Set;
+use Livewire\Component;
+
+use Filament\Forms\Form;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
@@ -24,6 +27,8 @@ class Pos extends Component implements HasForms
     public $payment_methods;
     public $order_items = [];
     public $total_price;
+    public $gender = '';
+    public $payment_method_id = 0;
 
     public function render()
     {
@@ -40,7 +45,7 @@ class Pos extends Component implements HasForms
             ->schema([
                 Section::make('Form Checkout')
                     ->schema([
-                        TextInput::make('nameCustomer')
+                        TextInput::make('name_customer')
                             ->required()
                             ->maxLength(255)
                             ->default(fn() => $this->name_customer),
@@ -48,7 +53,8 @@ class Pos extends Component implements HasForms
                             ->options([
                                 'male' => 'Laki - laki',
                                 'female' => 'Perempuan'
-                            ]),
+                            ])
+                            ->required(),
                         TextInput::make('total_price')
                             ->numeric()
                             ->readOnly()
@@ -168,5 +174,37 @@ class Pos extends Component implements HasForms
         }
         $this->total_price = $total;
         return $total;
+    }
+
+    public function checkout()
+    {
+        $this->validate([
+            'name_customer' => 'required|string|max:255',
+            'gender' => 'required|in:male,female',
+            'payment_method_id' => 'required',
+        ]);
+
+        $payment_method_id_temp = $this->payment_method_id;
+
+        $order = Order::create([
+            'name' => $this->name_customer,
+            'gender' => $this->gender,
+            'total_price' => $this->calculateTotal(),
+            'payment_method_id' => $payment_method_id_temp,
+        ]);
+
+        foreach($this->order_items as $item){
+            OrderProduct::create([
+                'order_id' => $order->id,
+                'product_id' => $item['product_id'],
+                'quantity' => $item['quantity'],
+                'unit_price' => $item['price'],
+            ]);
+        }
+
+        $this->order_items = [];
+        session()->forget('orderItems');
+
+        return redirect()->to('admin/orders');
     }
 }

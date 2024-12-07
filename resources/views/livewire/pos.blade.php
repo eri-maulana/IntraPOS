@@ -47,9 +47,10 @@
                 </div>
             </div>
         @endforeach
-        <form class="">
+        <form wire:submit="checkout">
             {{ $this->form }}
-            <x-filament::button type="submit"
+            <x-filament::button 
+            type="submit"
                 class="w-full mt-3 text-white mt-4 py-2 rounded">Checkout</x-filament::button>
         </form>
         <div class="mt-2"></div>

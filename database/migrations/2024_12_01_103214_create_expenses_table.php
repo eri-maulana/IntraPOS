@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
-            $table->string('name', length: 50);
-            $table->longText('note');
+            $table->string('name');
+            $table->longtext('note');
             $table->date('date_expense');
             $table->integer('amount');
             $table->timestamps();

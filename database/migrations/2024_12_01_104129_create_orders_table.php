@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', length: 50);
-            $table->string('email', length: 150)->nullable();
-            $table->enum('gender', ['male','female']);
+            $table->id();   
+            $table->string('name');
+            $table->string('email')->nullable();
+            $table->enum('gender', ['male', 'female']);
             $table->string('phone')->nullable();
             $table->date('birthday')->nullable();
             $table->integer('total_price');
@@ -24,10 +24,9 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('payment_methods')
                 ->nullOnDelete();
-            $table->integer('paid_amount');
+            $table->integer('paid_amount')->nullable();
             $table->integer('change_amount')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
