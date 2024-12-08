@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\ProductResource\Pages;
 
-use Exeption;
 use Filament\Actions;
 use Filament\Actions\Action;
 use App\Imports\ProductImport;
@@ -36,7 +35,7 @@ class ListProducts extends ListRecords
                             ->title('Product imported')
                             ->success()
                             ->send();
-                    } catch(\Exeption $e) {
+                    } catch(\Exception $e) {
                         dd($e);
                         Notification::make()
                                 ->title('Product failed to import')
