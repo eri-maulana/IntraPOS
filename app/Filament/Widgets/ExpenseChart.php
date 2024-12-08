@@ -14,7 +14,6 @@ class ExpenseChart extends ChartWidget
 
     protected static ?int $sort = 2;
 
-    protected static string $color = 'danger';
 
     public ?string $filter = 'today';
 
@@ -76,7 +75,7 @@ class ExpenseChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Omset '.$this->getFilters()[$activeFilter],
+                    'label' => 'Pengeluaran '.$this->getFilters()[$activeFilter],
                     'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                 ],
             ],

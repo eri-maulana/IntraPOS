@@ -11,9 +11,10 @@ use Carbon\Carbon;
 class OmsetChart extends ChartWidget
 {
     protected static ?string $heading = 'Omset';
+
     protected static ?int $sort = 1;
+    
     public ?string $filter = 'today';
-    protected static string $color = 'success';
 
     protected function getData(): array
     {

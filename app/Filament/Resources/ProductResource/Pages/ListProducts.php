@@ -19,7 +19,7 @@ class ListProducts extends ListRecords
     {
         return [
             Action::make('importProducts')
-                ->label('Import Product')
+                ->label('Import Produk')
                 ->icon('heroicon-s-arrow-down-tray')
                 ->color('gray')
                 ->form([
@@ -44,6 +44,7 @@ class ListProducts extends ListRecords
                     }
                 }),
             Action::make("Download Template")
+                ->label('Unduh Template')
                 ->url(route('download-template'))
                 ->color('info'),
             Actions\CreateAction::make(),

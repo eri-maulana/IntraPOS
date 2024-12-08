@@ -47,7 +47,7 @@ class OrderResource extends Resource
                                     ->label('Jenis Kelamin')
                                     ->required(),
                             ])
-                ]),
+                    ]),
                 Forms\Components\Group::make()
                     ->schema([
                         Forms\Components\Section::make('Info Tambahan')
@@ -55,19 +55,19 @@ class OrderResource extends Resource
                                 Forms\Components\TextInput::make('email')
                                     ->email()
                                     ->maxLength(255),
-                                
+
                                 Forms\Components\TextInput::make('phone')
                                     ->tel()
                                     ->label('No. Telp')
                                     ->maxLength(255),
                                 Forms\Components\DatePicker::make('birthday')
-                                ->label('Tanggal Lahir'),
+                                    ->label('Tanggal Lahir'),
                             ])
-                ]),
+                    ]),
                 Forms\Components\Section::make('Produk dipesan')->schema([
                     self::getItemsRepeater(),
                 ]),
-                
+
                 Forms\Components\Group::make()
                     ->schema([
                         Forms\Components\Section::make()
@@ -98,9 +98,6 @@ class OrderResource extends Resource
                                             $set('change_amount', 0);
                                             $set('paid_amount', $get('total_price'));
                                         }
-
-                                        
-
                                     })
                                     ->afterStateHydrated(function (Forms\Set $set, Forms\Get $get, $state) {
                                         $paymentMethod = PaymentMethod::find($state);
@@ -117,24 +114,26 @@ class OrderResource extends Resource
                                 Forms\Components\TextInput::make('paid_amount')
                                     ->numeric()
                                     ->reactive()
+                                    
                                     ->label('Nominal Bayar')
-                                    ->readOnly(fn (Forms\Get $get) => $get('is_cash') == false)
+                                    ->readOnly(fn(Forms\Get $get) => $get('is_cash') == false)
                                     ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get, $state) {
                                         // function untuk menghitung uang kembalian
 
                                         self::updateExcangePaid($get, $set);
-                                    }),
+                                    })
+                                    ->live(onBlur: true),
                                 Forms\Components\TextInput::make('change_amount')
                                     ->numeric()
                                     ->label('Kembalian')
                                     ->readOnly(),
                             ])
-                        ]),
-                        
-               
-                
-                
-                
+                    ]),
+
+
+
+
+
             ]);
     }
 
@@ -143,24 +142,24 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                ->label('Nama')
+                    ->label('Nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('gender')
-                ->label('Jenis Kelamin'),
+                    ->label('Jenis Kelamin'),
                 Tables\Columns\TextColumn::make('total_price')
-                ->label('Harga Total')
+                    ->label('Harga Total')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('paymentMethod.name')
-                ->label('Metode Pembayaran')
+                    ->label('Metode Pembayaran')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('paid_amount')
-                ->label('Nominal Bayar')
+                    ->label('Nominal Bayar')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('change_amount')
-                ->label('Kembalian')
+                    ->label('Kembalian')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -271,7 +270,7 @@ class OrderResource extends Resource
                     ->columnSpan([
                         'md' => 3
                     ]),
-                
+
             ]);
     }
 
@@ -293,5 +292,17 @@ class OrderResource extends Resource
         $totalPrice = (int) $get('total_price') ?? 0;
         $exchangePaid = $paidAmount - $totalPrice;
         $set('change_amount', $exchangePaid);
+    }
+
+    public static function getLabel(): ?string
+    {
+
+        $locale = app()->getLocale();
+
+        if ($locale == 'id') {
+            return 'Pesanan';
+        } else {
+            return 'Order';
+        }
     }
 }

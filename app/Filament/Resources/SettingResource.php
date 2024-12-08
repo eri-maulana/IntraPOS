@@ -27,12 +27,15 @@ class SettingResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('shop')
                     ->required()
+                    ->label('Nama Toko')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('address')
                     ->required()
+                    ->label('Alamat')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
                     ->tel()
+                    ->label('No. Telpon')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -43,11 +46,14 @@ class SettingResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('shop')
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Nama Toko'),
                 Tables\Columns\TextColumn::make('address')
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Alamat'),
                 Tables\Columns\TextColumn::make('phone')
-                    ->searchable(),
+                    ->searchable()
+                    ->label('No. Telpon'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -89,5 +95,17 @@ class SettingResource extends Resource
     public static function canCreate():bool
     {
         return Setting::count() < 1;
+    }
+
+    public static function getLabel(): ?string 
+    {
+
+        $locale = app()->getLocale();
+
+        if($locale == 'id'){
+            return 'Pengaturan Toko';
+        } else {
+            return 'Setting';
+        }
     }
 }

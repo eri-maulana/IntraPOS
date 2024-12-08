@@ -137,4 +137,16 @@ class ProductResource extends Resource
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
     }
+
+    public static function getLabel(): ?string 
+    {
+
+        $locale = app()->getLocale();
+
+        if($locale == 'id'){
+            return 'Produk';
+        } else {
+            return 'Product';
+        }
+    }
 }

@@ -29,6 +29,7 @@ class Pos extends Component implements HasForms
     public $total_price;
     public $gender = '';
     public $payment_method_id = 0;
+    
 
     public function render()
     {
@@ -47,9 +48,11 @@ class Pos extends Component implements HasForms
                     ->schema([
                         TextInput::make('name_customer')
                             ->required()
+                            ->label('Nama Pelanggan')
                             ->maxLength(255)
                             ->default(fn() => $this->name_customer),
                         Select::make('gender')
+                        ->label('Jenis Kelamin')
                             ->options([
                                 'male' => 'Laki - laki',
                                 'female' => 'Perempuan'
@@ -57,11 +60,12 @@ class Pos extends Component implements HasForms
                             ->required(),
                         TextInput::make('total_price')
                             ->numeric()
+                            ->label('Harga Total')
                             ->readOnly()
                             ->default(fn() => $this->total_price),
                         Select::make('payment_method_id')
                             ->required()
-                            ->label('Metode Pemabayaran')
+                            ->label('Metode Pembayaran')
                             ->options($this->payment_methods->pluck('name', 'id'))
                     ])
             ]);
@@ -205,6 +209,8 @@ class Pos extends Component implements HasForms
         $this->order_items = [];
         session()->forget('orderItems');
 
-        return redirect()->to('admin/orders');
+        return redirect()->to('/orders');
     }
+
+   
 }

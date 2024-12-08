@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ExpenseResource\Pages;
-use App\Filament\Resources\ExpenseResource\RelationManagers;
-use App\Models\Expense;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Expense;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Support\Htmlable;
+use App\Filament\Resources\ExpenseResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ExpenseResource\RelationManagers;
 
 class ExpenseResource extends Resource
 {
@@ -20,6 +21,12 @@ class ExpenseResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-down';
 
     protected static ?string $navigationGroup = 'Lainnya';
+
+    // protected static ?string $navigationLabel = 'Pengeluaran';
+
+    // protected ?string $heading = 'Pengeluaran';
+
+    // protected static ?string $title = 'Pengeluaran';
 
     public static function form(Form $form): Form
     {
@@ -47,16 +54,16 @@ class ExpenseResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('date_expense')
-                    ->date()
-                    ->label('Tanggal Pengeluaran')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->label('Nama'),
                 Tables\Columns\TextColumn::make('amount')
                     ->numeric()
                     ->label('Jumlah Pengeluaran')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('date_expense')
+                    ->date()
+                    ->label('Tanggal Pengeluaran')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -79,6 +86,7 @@ class ExpenseResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -101,5 +109,17 @@ class ExpenseResource extends Resource
             'create' => Pages\CreateExpense::route('/create'),
             'edit' => Pages\EditExpense::route('/{record}/edit'),
         ];
+    }
+
+    public static function getLabel(): ?string
+    {
+
+        $locale = app()->getLocale();
+
+        if ($locale == 'id') {
+            return 'Pengeluaran';
+        } else {
+            return 'Expense';
+        }
     }
 }
