@@ -23,6 +23,9 @@ class Product extends Model
         'barcode',
         'description',
     ];
+
+    protected $appends = ['image_url'];
+    
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
