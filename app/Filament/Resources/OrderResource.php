@@ -247,7 +247,7 @@ class OrderResource extends Resource
                         if ($state > $stock) {
                             $set('quantity', $stock);
                             Notification::make()
-                                ->title('Stok tidak Cukup !! <br> jumlah barang yang ingin di beli melebihi stok tersedia')
+                                ->title('Stok Tidak Cukup !! <br> harap masukan ulang kuantitas dibawah stok tersedia')
                                 ->warning()
                                 ->send();
                         }

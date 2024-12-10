@@ -59,4 +59,6 @@ class Product extends Model
     {
         $query->where("name", "like", "%{$value}%");
     }
+
+    
 }
