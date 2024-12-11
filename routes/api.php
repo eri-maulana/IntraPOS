@@ -10,10 +10,10 @@ use App\Http\Controllers\Api\PaymentMethodController;
 Route::post('login', [AuthController::class, 'login']);
 
 Route::apiResource('products', ProductController::class)->middleware(['auth:sanctum']);
+Route::apiResource('orders', OrderController::class)->middleware(['auth:sanctum']);
 
 Route::get('products/barcode/{barcode}', [ProductController::class, 'showByBarcode'])->middleware(['auth:sanctum']);
 Route::get('payment-methods', [PaymentMethodController::class, 'index'])->middleware(['auth:sanctum']);
-Route::get('orders', [OrderController::class, 'index'])->middleware(['auth:sanctum']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
