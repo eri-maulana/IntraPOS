@@ -41,9 +41,9 @@ class OrderController extends Controller
             'phone' => 'nullable|string',
             'total_price' => 'required|numeric',
             'notes' => 'nullable|string',
-            'payment_method_id' => 'required|exists:payment_method, id',
+            'payment_method_id' => 'required|exists:payment_methods,id',
             'items' => 'required|array',
-            'items.*.product_id' => 'required|exists:products, id',
+            'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.unit_price' => 'required|integer|min:0',
 
@@ -87,7 +87,6 @@ class OrderController extends Controller
                 'unit_price' => $item['unit_price'],
             ]);
 
-            $product->decrement('stock', $item['quantity']);
         }
 
         return response()->json([
