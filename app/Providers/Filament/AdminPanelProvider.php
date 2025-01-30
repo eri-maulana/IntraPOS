@@ -57,6 +57,9 @@ class AdminPanelProvider extends PanelProvider
                 'Data Produk',
                 'Pengaturan',
                 'Lainnya',
+            ])
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
             ]);
     }
 }

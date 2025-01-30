@@ -22,11 +22,11 @@ return [
     'form' => [
 
         'email' => [
-            'label' => 'Alamat email',
+            'label' => 'Email',
         ],
 
         'password' => [
-            'label' => 'Kata sandi',
+            'label' => 'Kata Sandi',
         ],
 
         'remember' => [

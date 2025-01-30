@@ -21,8 +21,6 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-tag';
 
-
-
     protected static ?string $cluster = Products::class;
 
     public static function form(Form $form): Form
