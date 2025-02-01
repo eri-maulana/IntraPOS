@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use App\Filament\Clusters\Products;
+use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -31,7 +32,7 @@ class ProductResource extends Resource
                     ->required()
                     ->label('Nama')
                     ->maxLength(50)
-                    ->afterStateUpdated(function (Set $set, $state){
+                    ->afterStateUpdated(function (Set $set, $state) {
                         $set('slug', Product::generateUniqueSlug($state));
                     })
                     ->live(onBlur: true),
@@ -71,7 +72,7 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
-                ->label('Gambar'),
+                    ->label('Gambar'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->label('Nama'),
@@ -80,7 +81,8 @@ class ProductResource extends Resource
                     ->sortable()
                     ->label('Kategori'),
                 Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('stock')
                     ->numeric()
                     ->label('Stok')
@@ -91,7 +93,7 @@ class ProductResource extends Resource
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()
                     ->label('Status Aktif'),
-                
+
                 Tables\Columns\TextColumn::make('barcode')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -112,6 +114,15 @@ class ProductResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                // Tambahkan Action untuk menampilkan QR Code
+                Action::make('Cetak Barcode')
+                    ->label('Cetak QR')
+                    ->action(function (Product $record) {
+                        // Redirect ke route atau halaman khusus untuk generate QR Code
+                        return redirect()->route('products.qrcode', $record);
+                    })
+                    ->icon('heroicon-o-qr-code')
+                    ->color('info'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -136,12 +147,12 @@ class ProductResource extends Resource
         ];
     }
 
-    public static function getLabel(): ?string 
+    public static function getLabel(): ?string
     {
 
         $locale = app()->getLocale();
 
-        if($locale == 'id'){
+        if ($locale == 'id') {
             return 'Produk';
         } else {
             return 'Product';
