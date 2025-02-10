@@ -45,6 +45,10 @@ class UserResource extends Resource
                     ->dehydrateStateUsing(fn($state) => Hash::make($state))
                     ->dehydrated(fn($state) => filled($state))
                     ->required(fn(string $context): bool => $context === 'create'),
+                Forms\Components\Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->preload()
+                    ->searchable(),
             ]);
     }
 
@@ -57,6 +61,9 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->label('Email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Peran')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -97,12 +104,12 @@ class UserResource extends Resource
         ];
     }
 
-    public static function getLabel(): ?string 
+    public static function getLabel(): ?string
     {
 
         $locale = app()->getLocale();
 
-        if($locale == 'id'){
+        if ($locale == 'id') {
             return 'Pengguna';
         } else {
             return 'User';

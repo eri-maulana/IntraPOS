@@ -20,7 +20,7 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-tag';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
 
     protected static ?string $cluster = Products::class;
 

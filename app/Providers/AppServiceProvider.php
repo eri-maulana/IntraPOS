@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,9 @@ class AppServiceProvider extends ServiceProvider
             $openApi->secure(
                 SecurityScheme::http('bearer')
             );
+        });
+        Blade::directive('money', function ($expression) {
+            return "<?php echo 'Rp ' . number_format($expression, 0, ',', '.'); ?>";
         });
     }
 }

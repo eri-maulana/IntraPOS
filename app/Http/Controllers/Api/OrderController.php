@@ -57,6 +57,7 @@ class OrderController extends Controller
             ], 422);
         }
 
+        // Cek stok produk
         foreach ($request->items as $item) {
             $product = Product::find($item['product_id']);
             if (!$product || $product->stock < $item['quantity']) {
@@ -67,6 +68,7 @@ class OrderController extends Controller
             }
         }
 
+        // Buat pesanan
         $order = Order::create($request->only([
             'name',
             'email',
@@ -80,6 +82,7 @@ class OrderController extends Controller
             'change_amount',
         ]));
 
+        // Simpan item pesanan
         foreach ($request->items as $item) {
             $order->orderProducts()->create([
                 'product_id' => $item['product_id'],

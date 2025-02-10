@@ -6,7 +6,7 @@ use Filament\Pages\Page;
 
 class PosPages extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-m-magnifying-glass';
 
     protected static string $view = 'filament.pages.pos-pages';
 
