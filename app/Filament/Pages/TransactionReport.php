@@ -23,9 +23,10 @@ class TransactionReport extends Page implements Forms\Contracts\HasForms
 
 
     // Properti untuk menyimpan tanggal filter dan data transaksi
-    public $start_date;
+    public $start_date ;
     public $end_date;
     public $orders = [];
+    public $no = 1;
 
     public function mount(): void
     {
@@ -50,30 +51,31 @@ class TransactionReport extends Page implements Forms\Contracts\HasForms
                     ->required(),
             ])->columns(2);
     }
-    // protected function getFormSchema(): array
-    // {
-    //     return [
 
-    //         DatePicker::make('start_date')
-    //             ->label('Tanggal Awal')
-    //             ->required(),
-    //         DatePicker::make('end_date')
-    //             ->label('Tanggal Akhir')
-    //             ->required(),
+    public function getTableQuery()
+    {
+        $start = $this->form->getState('start_date');
+        $end   = $this->form->getState('end_date');
 
-    //     ];
-    // }
-
+        return Order::query()
+            ->with('orderProducts.product')
+            ->with('paymentMethod.name')
+            ->when($start, fn($query, $start) => $query->whereDate('created_at', '>=', $start))
+            ->when($end, fn($query, $end) => $query->whereDate('created_at', '<=', $end));
+    }
 
     // Method untuk memuat data transaksi berdasarkan filter tanggal
     public function loadData()
     {
         $this->orders = Order::query()
+            ->with('orderProducts.product')
             ->whereDate('created_at', '>=', $this->start_date)
             ->whereDate('created_at', '<=', $this->end_date)
             ->orderBy('created_at', 'desc')
             ->get();
     }
+
+    
 
     // Method yang dipanggil saat form disubmit (filter data)
     public function filter()

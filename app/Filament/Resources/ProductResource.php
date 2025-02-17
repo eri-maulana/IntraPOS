@@ -89,6 +89,7 @@ class ProductResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
                     ->sortable()
+                    ->money('IDR')
                     ->label('Harga'),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()

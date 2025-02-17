@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Repeater;
 use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
 
 class OrderResource extends Resource
 {
@@ -61,7 +62,8 @@ class OrderResource extends Resource
                                     ->label('No. Telp')
                                     ->maxLength(255),
                                 Forms\Components\DatePicker::make('birthday')
-                                    ->label('Tanggal Lahir'),
+                                    ->label('Tanggal Lahir')
+                                    ->hidden(),
                             ])
                     ]),
                 Forms\Components\Section::make('Produk dipesan')->schema([
@@ -176,6 +178,10 @@ class OrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('print')
+                    ->label('Print')
+                    ->url(fn (Order $record) => route('print.struk', $record))
+                    ->openUrlInNewTab(), 
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -204,6 +210,7 @@ class OrderResource extends Resource
     {
         return Repeater::make('orderProducts')
             ->relationship()
+            ->label(' ')
             ->live()
             ->columns([
                 'md' => 10,

@@ -1,6 +1,7 @@
 <?php
 
 use App\Exports\TemplateExport;
+use App\Http\Controllers\OrderController;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductQRCodeController;
@@ -17,7 +18,5 @@ Route::get('/products/{product}/qrcode', [ProductQRCodeController::class, 'show'
 // generate qrcode pdf
 Route::get('/products/{id}/generate-pdf', [ProductQRCodeController::class, 'generatePdf'])->name('products.generatePdf');
 
-// export laporan
-// Route::get('/export-order/{start}/{end}', [ReportController::class, 'exportPdf'])
-//     ->name('orders.report.export');
-// Route::get('/order-report', \App\Livewire\OrderReport::class)->name('orderreport');
+
+Route::get('/order/{order}/print', [OrderController::class, 'print'])->name('print.struk');
