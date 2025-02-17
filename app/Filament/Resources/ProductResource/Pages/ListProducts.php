@@ -20,7 +20,6 @@ class ListProducts extends ListRecords
         return [
             Action::make('importProducts')
                 ->label('Import Produk')
-                ->icon('heroicon-s-arrow-down-tray')
                 ->color('gray')
                 ->form([
                     FileUpload::make('attachment')

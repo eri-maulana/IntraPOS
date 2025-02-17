@@ -49,10 +49,7 @@
             font-weight: bold;
             text-align: center;
         }
-        /* Zebra striping */
-        table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+        
         /* Lebar kolom disesuaikan agar tidak terlalu lebar atau sempit */
         .col-no { width: 3%; text-align: center}
         .col-id { width: 3%; text-align: center}
@@ -79,7 +76,7 @@
         <table>
             <thead>
                 <tr>
-                    <th class="col-no">No</th>
+                    <th class="col-no">#</th>
                     <th class="col-id">ID</th>
                     <th class="col-date">Tanggal</th>
                     <th class="col-name">Nama</th>

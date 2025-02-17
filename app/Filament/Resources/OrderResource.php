@@ -179,9 +179,11 @@ class OrderResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('print')
-                    ->label('Print')
+                    ->label('Cetak Struk')
+                    ->color('info')
                     ->url(fn (Order $record) => route('print.struk', $record))
-                    ->openUrlInNewTab(), 
+                    ->openUrlInNewTab()
+                    ->icon('heroicon-o-printer'), 
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
