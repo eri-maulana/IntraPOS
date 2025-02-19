@@ -30,6 +30,7 @@ class Pos extends Component implements HasForms
     public $gender = '';
     public $payment_method_id = 0;
     
+    protected $listeners = ['searchUpdated' => 'updateSearch'];
 
     public function render()
     {
@@ -212,5 +213,9 @@ class Pos extends Component implements HasForms
         return redirect()->to('/orders');
     }
 
+    public function updateSearch($search)
+    {
+        $this->search = $search;
+    }
    
 }

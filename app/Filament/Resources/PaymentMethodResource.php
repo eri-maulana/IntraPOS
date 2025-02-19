@@ -8,6 +8,7 @@ use App\Models\PaymentMethod;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\Alignment;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -47,10 +48,12 @@ class PaymentMethodResource extends Resource
                     ->searchable()
                     ->label('Nama'),
                 Tables\Columns\ImageColumn::make('image')
-                ->label('Gambar'),
+                ->label('Gambar')
+                ->alignment(Alignment::Center),
                 Tables\Columns\IconColumn::make('is_cash')
                     ->boolean()
-                    ->label('Bayar tunai?'),
+                    ->label('Bayar tunai?')
+                    ->alignment(Alignment::Center),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

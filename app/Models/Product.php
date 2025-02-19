@@ -25,7 +25,7 @@ class Product extends Model
     ];
 
     protected $appends = ['image_url'];
-    
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -42,7 +42,7 @@ class Product extends Model
         $originalSlug = $slug;
         $counter = 1;
 
-        while(self::where('slug', $slug)->exists()){
+        while (self::where('slug', $slug)->exists()) {
             $slug = $originalSlug . '-' . $counter;
             $counter++;
         }
@@ -57,8 +57,9 @@ class Product extends Model
 
     public function scopeSearch($query, $value)
     {
-        $query->where("name", "like", "%{$value}%");
+        return $query->where(function ($query) use ($value) {
+            $query->where("name", "like", "%{$value}%")
+                ->orWhere("barcode", "like", "%{$value}%");
+        });
     }
-
-    
 }

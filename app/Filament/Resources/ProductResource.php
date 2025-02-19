@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ProductResource\RelationManagers;
+use Filament\Support\Enums\Alignment;
 
 class ProductResource extends Resource
 {
@@ -72,7 +73,8 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
-                    ->label('Gambar'),
+                    ->label('Gambar')
+                    ->alignment(Alignment::Center),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->label('Nama'),
@@ -85,15 +87,17 @@ class ProductResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('stock')
                     ->numeric()
+                    ->alignment(Alignment::Center)
                     ->label('Stok')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
                     ->sortable()
-                    ->money('IDR')
+                    ->numeric()
                     ->label('Harga'),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()
-                    ->label('Status Aktif'),
+                    ->label('Status Aktif')
+                    ->alignment(Alignment::Center),
 
                 Tables\Columns\TextColumn::make('barcode')
                     ->searchable(),

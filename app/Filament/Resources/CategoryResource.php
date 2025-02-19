@@ -18,6 +18,7 @@ use App\Filament\Resources\CategoryResource\RelationManagers;
 //class yang dibutuhkan
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Set;
+use Filament\Support\Enums\Alignment;
 use Illuminate\Support\Str;
 
 class CategoryResource extends Resource
@@ -64,7 +65,8 @@ class CategoryResource extends Resource
                 //     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()
-                    ->label('Status Aktif'),
+                    ->label('Status Aktif')
+                    ->alignment(Alignment::Center),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

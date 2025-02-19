@@ -4,7 +4,7 @@ return [
 
     'title' => 'Masuk',
 
-    'heading' => 'Introtech Retail Assistant POS',
+    'heading' => 'Introtech Retail Assistant',
 
     'actions' => [
 
