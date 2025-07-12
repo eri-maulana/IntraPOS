@@ -60,6 +60,7 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 'Data Transaksi',
                 'Data Produk',
+                'Manajemen Gudang',
                 'Laporan',
                 'Pengaturan',
                 'Lainnya',

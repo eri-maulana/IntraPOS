@@ -69,7 +69,7 @@
         <div class="qr-code">
             <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code">
         </div>
-        <p>Rp. {{ number_format($harga, 0, ',', '.') }}</p>
+        <p>Rp {{ number_format($harga, 0, ',', '.') }}</p>
         <div>
             {{-- <a href="{{ route('products.qrcode.pdf', $product) }}" target="_blank" class="btn-custom btn-download">Download PDF</a> --}}
             <a href="{{ route('products.generatePdf', $product) }}" class="btn-custom btn-download" target="_blank">Download PDF</a>

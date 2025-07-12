@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\IncomingProduct;
+use App\Observers\IncomingProductObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
@@ -33,5 +35,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('money', function ($expression) {
             return "<?php echo 'Rp ' . number_format($expression, 0, ',', '.'); ?>";
         });
+
+        IncomingProduct::observe(IncomingProductObserver::class);
     }
 }

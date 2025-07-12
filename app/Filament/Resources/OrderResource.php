@@ -23,9 +23,16 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-up-tray';
+    protected static ?string $navigationLabel = 'Barang Keluar';
+    protected static ?string $navigationGroup = 'Manajemen Gudang';
+    protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationGroup = 'Data Transaksi';
+
+    // public static function getNavigationLabel(): string
+    // {
+    //     return auth()->user()->hasRole(['gudang', 'admin_gudang']) ? 'Barang Keluar' : 'Order';
+    // }
 
 
     public static function form(Form $form): Form
@@ -81,6 +88,7 @@ class OrderResource extends Resource
                                     ->numeric(),
                                 Forms\Components\Textarea::make('note')
                                     ->columnSpanFull()
+                                    ->rows(7)
                                     ->label('Catatan'),
                             ])
                     ]),
@@ -116,7 +124,7 @@ class OrderResource extends Resource
                                 Forms\Components\TextInput::make('paid_amount')
                                     ->numeric()
                                     ->reactive()
-                                    
+
                                     ->label('Nominal Bayar')
                                     ->readOnly(fn(Forms\Get $get) => $get('is_cash') == false)
                                     ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get, $state) {
@@ -181,9 +189,9 @@ class OrderResource extends Resource
                 Tables\Actions\Action::make('print')
                     ->label('Cetak Struk')
                     ->color('info')
-                    ->url(fn (Order $record) => route('print.struk', $record))
+                    ->url(fn(Order $record) => route('print.struk', $record))
                     ->openUrlInNewTab()
-                    ->icon('heroicon-o-printer'), 
+                    ->icon('heroicon-o-printer'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -309,9 +317,9 @@ class OrderResource extends Resource
         $locale = app()->getLocale();
 
         if ($locale == 'id') {
-            return 'Pesanan';
+            return 'Barang Keluar';
         } else {
-            return 'Order';
+            return 'Output Product';
         }
     }
 }

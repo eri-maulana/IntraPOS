@@ -36,6 +36,12 @@ class Product extends Model
         return $this->hasMany(OrderProduct::class);
     }
 
+    public function incomingProducts()
+    {
+        return $this->hasMany(IncomingProduct::class);
+    }
+
+
     public static function generateUniqueSlug(string $name): string
     {
         $slug = Str::slug($name);

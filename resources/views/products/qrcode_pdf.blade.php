@@ -22,7 +22,7 @@
             border-collapse: collapse; /* Menghilangkan jarak antar sel */
         }
         td {
-            width: 35%; /* 3 kolom per baris */
+            width: 25%; /* 3 kolom per baris */
             text-align: center;
             border: 1px solid #000; /* Garis kotak */
             padding: 10px;
@@ -34,7 +34,7 @@
         }
         td p {
             margin: 5px 0 0;
-            font-size: 12px;
+            font-size: 8px;
         }
         .nama-produk{
             font-weight: bold;
@@ -53,14 +53,14 @@
     <div class="page">
         <table>
             <!-- Loop untuk membuat 5 baris -->
-            @for ($i = 0; $i < 6; $i++)
+            @for ($i = 0; $i <= 6; $i++)
                 <tr>
-                    <!-- Loop untuk membuat 3 kolom per baris -->
-                    @for ($j = 0; $j < 5; $j++)
+                    <!-- Loop untuk membuat 4 kolom per baris -->
+                    @for ($j = 0; $j <= 4; $j++)
                         <td>
                             <p class="nama-produk">{{ $product->name }}</p>
                             <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code">
-                            <p>Rp: {{ number_format($harga, 0, ',', '.') }}</p>
+                            <p>Rp {{ number_format($harga, 0, ',', '.') }}</p>
                         </td>
                     @endfor
                 </tr>
