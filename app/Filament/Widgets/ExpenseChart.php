@@ -17,6 +17,12 @@ class ExpenseChart extends ChartWidget
 
     public ?string $filter = 'month';
 
+    public static function canView(): bool
+    {
+        return auth()->user()?->hasRole(['super_admin', 'kasir']);
+    }
+
+
     protected function getData(): array
     {
         $activeFilter = $this->filter;
@@ -68,15 +74,15 @@ class ExpenseChart extends ChartWidget
                 return $date->format('H:i');
             } elseif ($dateRange['period'] === 'perDay') {
                 return $date->format('d M');
-            } 
+            }
             return $date->format('M Y');
         });
-    
+
         return [
             'datasets' => [
                 [
-                    'label' => 'Pengeluaran '.$this->getFilters()[$activeFilter],
-                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                    'label' => 'Pengeluaran ' . $this->getFilters()[$activeFilter],
+                    'data' => $data->map(fn(TrendValue $value) => $value->aggregate),
                 ],
             ],
             'labels' => $labels,

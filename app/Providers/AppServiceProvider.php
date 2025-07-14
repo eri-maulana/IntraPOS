@@ -11,6 +11,7 @@ use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,6 +35,10 @@ class AppServiceProvider extends ServiceProvider
         });
         Blade::directive('money', function ($expression) {
             return "<?php echo 'Rp ' . number_format($expression, 0, ',', '.'); ?>";
+        });
+
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole('super_admin', 'kasir', 'admin_gudang', 'gudang') ? true : null;
         });
 
         IncomingProduct::observe(IncomingProductObserver::class);

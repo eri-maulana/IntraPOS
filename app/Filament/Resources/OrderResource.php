@@ -23,16 +23,10 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-up-tray';
-    protected static ?string $navigationLabel = 'Barang Keluar';
-    protected static ?string $navigationGroup = 'Manajemen Gudang';
+    protected static ?string $navigationIcon = null;
+    protected static ?string $navigationLabel = null;
+    protected static ?string $navigationGroup = null;
     protected static ?int $navigationSort = 2;
-
-
-    // public static function getNavigationLabel(): string
-    // {
-    //     return auth()->user()->hasRole(['gudang', 'admin_gudang']) ? 'Barang Keluar' : 'Order';
-    // }
 
 
     public static function form(Form $form): Form
@@ -311,15 +305,62 @@ class OrderResource extends Resource
         $set('change_amount', $exchangePaid);
     }
 
+    //function label sesuai role
     public static function getLabel(): ?string
     {
-
         $locale = app()->getLocale();
+        $user = auth()->user();
 
-        if ($locale == 'id') {
-            return 'Barang Keluar';
+        // Default label
+        $labelId = 'Barang Keluar';
+        $labelEn = 'Output Product';
+
+        // Cek jika user memiliki role super_admin
+        if ($user && $user->hasRole(['super_admin', 'kasir'])) {
+            $labelId = 'Pesanan';
+            $labelEn = 'Order';
+        }
+
+        return $locale === 'id' ? $labelId : $labelEn;
+    }
+
+    //function navigasi label sesuai role
+    public static function getNavigationLabel(): string
+    {
+        $locale = app()->getLocale();
+        $user = auth()->user();
+
+        if ($user && $user->hasRole(['super_admin', 'kasir'])) {
+            return $locale === 'id' ? 'Pesanan' : 'Order';
+        }
+
+        return $locale === 'id' ? 'Barang Keluar' : 'Output Product';
+    }
+
+    //function navigasi label grup sesuai role
+    public static function getNavigationGroup(): string
+    {
+        $locale = app()->getLocale();
+        $user = auth()->user();
+
+        if ($user && $user->hasRole(['super_admin', 'kasir'])) {
+            return $locale === 'id' ? 'Data Transaksi' : 'Manajemen POS';
+        }
+
+        return $locale === 'id' ? 'Manajemen Gudang' : 'Warehouse Management';
+    }
+
+    //function icon navigasi label sesuai role
+    public static function getNavigationIcon(): ?string
+    {
+        $user = auth()->user();
+
+        if ($user && $user->hasRole(['super_admin', 'kasir'])) {
+             return 'heroicon-o-shopping-cart' ;
         } else {
-            return 'Output Product';
+             return 'heroicon-o-arrow-up-tray';
         }
     }
+
+    
 }

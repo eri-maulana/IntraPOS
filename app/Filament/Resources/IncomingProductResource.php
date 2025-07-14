@@ -18,7 +18,7 @@ class IncomingProductResource extends Resource
     protected static ?string $model = IncomingProduct::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-tray';
-    // protected static ?string $navigationLabel = 'Barang Masuk';
+    protected static ?string $navigationLabel = 'Barang Masuk';
     protected static ?string $navigationGroup = 'Manajemen Gudang';
     protected static ?int $navigationSort = 1;
 

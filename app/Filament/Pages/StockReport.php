@@ -17,6 +17,7 @@ class StockReport extends Page
     protected static ?string $navigationGroup = 'Laporan';
     protected static ?string $navigationLabel = 'Laporan Stok Produk';    
     protected static ?string $title = 'Laporan Stok Produk';
+    protected static ?int $navigationSort = 1;
 
     public $products;
 

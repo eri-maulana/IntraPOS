@@ -16,6 +16,12 @@ class OmsetChart extends ChartWidget
     
     public ?string $filter = 'today';
 
+    public static function canView(): bool
+    {
+        return auth()->user()?->hasRole(['super_admin', 'kasir']);
+    }
+
+
     protected function getData(): array
     {
         $activeFilter = $this->filter;

@@ -38,7 +38,7 @@ class SupplierResource extends Resource
                     ->label('Alamat')
                     ->nullable(),
                 TextInput::make('telp')
-                ->label('No. Telepon')
+                    ->label('No. Telepon')
                     ->nullable(),
                 TextInput::make('email')
                     ->nullable()
@@ -49,15 +49,20 @@ class SupplierResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            TextColumn::make('company_name')->searchable(),
-            TextColumn::make('address'),
-            TextColumn::make('telp'),
+            TextColumn::make('company_name')
+                ->searchable()
+                ->label('Nama Perusahaan'),
+            TextColumn::make('address')
+                ->label('Alamat'),
+            TextColumn::make('telp')
+                ->label('No. Telepon'),
             TextColumn::make('email'),
         ])->filters([
             //
         ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

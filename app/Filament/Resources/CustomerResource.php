@@ -48,9 +48,13 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
-                TextColumn::make('address'),
-                TextColumn::make('telp'),
+                TextColumn::make('name')
+                    ->searchable()
+                    ->label('Nama Pelanggan'),
+                TextColumn::make('address')
+                    ->label('Alamat'),
+                TextColumn::make('telp')
+                    ->label('No. Telepon'),
                 TextColumn::make('email')
             ])
             ->filters([
@@ -58,6 +62,7 @@ class CustomerResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
